@@ -1,0 +1,7 @@
+{
+  "name": "backend-portfolio",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ]
+}
