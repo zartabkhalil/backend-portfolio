@@ -47,13 +47,14 @@ model User {
   firstName     String
   lastName      String
   email         String        @unique
-  Role          Role          @default(USER)
-  AccountStatus AccountStatus @default(PENDING)
+  role          Role          @default(USER)
+  accountStatus AccountStatus @default(PENDING)
   password      String
   otp           String?
   otpExpiry     DateTime?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+  refreshToken  String?       @unique
   //reverse realtions
   profile       Profile?
   posts         Post[]
@@ -73,16 +74,16 @@ model User {
 }
 
 model Profile {
-  id          Int      @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   //Relation
-  userId      Int      @unique
-  user        User     @relation(fields: [userId], references: [id])
-  username    String
-  bio         String
-  avatar      String
-  converImage String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  userId     Int      @unique
+  user       User     @relation(fields: [userId], references: [id])
+  username   String   @unique
+  bio        String?
+  avatar     String?
+  coverImage String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Post {

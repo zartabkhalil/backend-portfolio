@@ -1,19 +1,33 @@
 import express from "express";
 import UserController from "../controllers/auth.controller";
-import { authLimiter } from "../middlewares/rateLimit.middleware";
+import authMiddleware from "../middlewares/auth.middleware";
+import {
+  authLimiter,
+  refreshTokenLimiter,
+} from "../middlewares/rateLimit.middleware";
 import validate from "../middlewares/validate";
 import UserValidator from "../validators/user.validator";
-const userRouter = express.Router();
+const authRouter = express.Router();
 const controller = new UserController();
 
-userRouter.post(
+authRouter.post(
   "/register",
   authLimiter,
   UserValidator.register(),
   validate,
   controller.register,
 );
-userRouter.post(
+
+//verify account
+authRouter.post(
+  "/verify-email",
+  authLimiter,
+  UserValidator.verify(),
+  validate,
+  controller.verifyAccount,
+);
+
+authRouter.post(
   "/login",
   authLimiter,
   UserValidator.login(),
@@ -21,4 +35,14 @@ userRouter.post(
   controller.login,
 );
 
-export default userRouter;
+authRouter.post(
+  "/refresh-token",
+  refreshTokenLimiter,
+  UserValidator.refreshToken(),
+  validate,
+  controller.refreshToken,
+);
+
+authRouter.post("/logout", authLimiter, authMiddleware, controller.logout);
+
+export default authRouter;
